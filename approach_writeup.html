@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GharFind AI: System Approach & Design Trade-offs</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --light-bg: #f7fafc;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: var(--primary-color);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            font-family: monospace;
+            background-color: var(--light-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .math-block {
+            background-color: var(--light-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 40px;
+            border-bottom: 1px double var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Page break rules for clean PDF printing */
+        @media print {
+            body {
+                margin: 20mm 15mm;
+                max-width: 100%;
+                padding: 0;
+                font-size: 11pt;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GharFind AI: System Approach & Design Trade-offs</h1>
+    <div class="subtitle">Autonomous Property-Discovery Agent for Home Buyers</div>
+
+    <div class="meta-info">
+        <span><strong>Author:</strong> AI Pair Programmer</span>
+        <span><strong>Target:</strong> Digitomics AI Assignment</span>
+        <span><strong>Date:</strong> July 4, 2026</span>
+    </div>
+
+    <h2>1. Executive Summary</h2>
+    <p>
+        Finding a home is a complex multi-criteria optimization problem. In the Indian market, this is further shaped by specific housing metrics (such as BHK - Bedroom Hall Kitchen spacing), unique pricing denominations (Lakhs and Crores), and challenging traffic/transit commute profiles.
+    </p>
+    <p>
+        This project implements an <strong>Autonomous Property-Discovery Web Application (GharFind AI)</strong> built using a full-stack <strong>Next.js (React + TypeScript)</strong> framework. The core system combines a conversational chat interface for natural preference extraction, an autonomous agentic loop to coordinate tool execution, a deterministic multi-criteria utility ranker to evaluate match compatibility, and a premium glassmorphic dashboard to visualize results.
+    </p>
+    <p>
+        To ensure immediate usability by evaluators, the app operates in two modes: <strong>Mock Agent Mode</strong> (zero setup, works instantly using keyword heuristics and simulated thought logs) and <strong>Live LLM Mode</strong> (plugs into Gemini or OpenAI APIs with genuine LLM function calling).
+    </p>
+
+    <h2>2. System Architecture & Flow</h2>
+    <p>
+        The application follows a clean unidirectional flow:
+    </p>
+    <ul>
+        <li><strong>Frontend Dashboard:</strong> A responsive dashboard containing a Sidebar (API key configuration, workplace location override, and preference weights), a Chat Interface (complete with an accordion-style Agent Thought Log mapping out tool calls), and a Ranked Shortlist Panel showing compatibility scores.</li>
+        <li><strong>Agentic Executor (API Route):</strong> Coordinates conversation history, extracts housing criteria, runs the tool execution loop, compiles data, and invokes the deterministic ranker.</li>
+        <li><strong>Commute Calculator:</strong> Uses the Haversine formula to calculate geographic distance between properties and the buyer's workplace, then applies transport mode coefficients (driving, transit, walking, bicycling) and heavy traffic delays (e.g. driving average at 25 km/h with 10 min congestion buffer) to estimate door-to-door commute times in Indian cities.</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h2>3. The Ranking Engine: Multi-Criteria Utility Theory</h2>
+    <p>
+        Rather than relying on the LLM to qualitatively rank properties (which is prone to hallucinations and mathematical inconsistency), we implement a <strong>Deterministic Utility Function</strong> that scores properties on a <code>0 - 100%</code> compatibility scale. The score is a weighted average of five category sub-scores:
+    </p>
+    
+    <div class="math-block">
+        Match Score = &Sigma; (Sub-Score_i &times; Weight_i) / &Sigma; Weight_i
+    </div>
+
+    <p>Where <code>Weight_i</code> represents the user-defined priority weight (integer 1-5, defaults to 3).</p>
+    
+    <h3>Sub-Score Formulations:</h3>
+    <ul>
+        <li><strong>Price Match (S_price):</strong> If Price &le; Budget, score is 100 (with a small bonus for being under budget). If Price &gt; Budget, the score drops linearly, penalizing listings exceeding the budget.</li>
+        <li><strong>Space Match (S_space):</strong> Evaluates BHK (Bedroom-Hall-Kitchen) and bathroom counts. A penalty of -30% is applied per missing BHK and -20% per missing bathroom.</li>
+        <li><strong>School Match (S_school):</strong> Computes the average rating of nearby schools (Primary, Middle, Senior School, scale 1-10). If the average meets the buyer's target, score is 100. Otherwise, it drops by 20% per point under the target.</li>
+        <li><strong>Safety Match (S_safety):</strong> Evaluates the neighborhood safety score (1-100). If it meets the target, score is 100. Otherwise, it drops by 3% per index point under the target.</li>
+        <li><strong>Commute Match (S_commute):</strong> Computes estimated commute time. If it is under the target (default 30 mins), score is 100. For every minute exceeding the target, the score drops by 3%.</li>
+    </ul>
+
+    <h2>4. Key Engineering Trade-Offs</h2>
+
+    <h3>A. Custom Agent Loop vs. Frameworks (LangChain, LlamaIndex)</h3>
+    <p>
+        We implemented a lightweight, custom TypeScript agent loop instead of using bulky orchestration libraries. While frameworks provide pre-built abstractions, they introduce massive dependency overhead and lock developers into rigid structures. A custom loop using standard fetch queries directly to Gemini/OpenAI API endpoints is transparent, easy to debug, has zero bundle-size bloat, and provides granular control over the tool logs shown to the user.
+    </p>
+
+    <h3>B. Deterministic Ranker vs. LLM Ranker</h3>
+    <p>
+        We separated the math from the language: the system calculates the scores deterministically, and the LLM translates the scores into conversational justifications. LLMs are notorious for poor mathematical consistency. A deterministic ranker guarantees that the shortlist is mathematically correct and consistent. The LLM is then used for what it does best: qualitative synthesis, highlighting specific property descriptions, and explaining why the property is an excellent match.
+    </p>
+
+    <h3>C. Client-Side vs. Server-Side Execution</h3>
+    <p>
+        The agent runs inside Next.js API Routes, while preference states and configuration reside in React state. Running the LLM on the server side keeps API keys secure and allows server-side logging. Tying the preferences and shortlist back to the frontend in JSON format allows the UI to render visual gauges and cards instantly, creating a highly interactive dashboard experience.
+    </p>
+
+    <h2>5. Future Enhancements & Production Roadmap</h2>
+    <ul>
+        <li><strong>Real-time API integrations:</strong> Connect to platforms like MagicBricks or Housing.com for live listings, local school directories for school ratings, and Google Maps API with live Indian traffic routing.</li>
+        <li><strong>Interactive Map Panel:</strong> Embed a Mapbox or Leaflet component to show candidate pins, neighborhood boundaries (like Indiranagar, BKC, Sector 62), and transit paths.</li>
+        <li><strong>Vastu Shastra Optimization:</strong> Adding a secondary utility sub-score for properties meeting Vastu compliance requirements, which is a highly valued feature for many Indian home buyers.</li>
+    </ul>
+
+</body>
+</html>

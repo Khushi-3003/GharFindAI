@@ -1,6 +1,6 @@
 # GharFind AI: Indian Real Estate Approach & Design Trade-offs
 **Project:** GharFind AI - Autonomous Property-Discovery Agent
-**Author:** AI Pair Programmer
+**Author:** Khushi U Poonja
 **Submission Date:** July 4, 2026
 
 ---
